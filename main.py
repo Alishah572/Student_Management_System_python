@@ -25,7 +25,7 @@ def user_Check(username, password)-> bool:
 
     return exist
 
-def email_Check(email)-> bool:
+def email_check(email)-> bool:
     mail = getEmail()
 
     if mail == email:
