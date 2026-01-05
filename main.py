@@ -1,42 +1,69 @@
 from time import sleep
 from os import system
+from random import shuffle
+from string import punctuation, digits, ascii_letters
+
+def encrypt_decrypt():
+    chars = " "+punctuation + digits + ascii_letters
+    chars = list(chars)
+    key = chars.copy()
+    shuffle(key)
+    print(key)
+
+    # Encryption
+    plain_text = input("Enter a message to encrypt: ") # abc
+    cipher_text = ""
+
+    for letter in plain_text:
+        index = chars.index(letter)
+        cipher_text += key[index]
+
+    print(f"Original message : {plain_text}")
+    print(f"Encrypted message : {cipher_text}")
+
+    # Decryption
+    cipher_text = input("Enter a message to encrypt: ")
+    plain_text = ""
+
+    for letter in cipher_text:
+        index = key.index(letter)
+        plain_text += chars[index]
+
+    print(f"Cipher Text : {cipher_text}")
+    print(f"Original Message : {plain_text}")
 
 
 def clear_screen():
-    # <------------------------------------------------------<<<
     _ = system('cls')
 
 def getData(username, password):
     # <------------------------------------------------------<<<
-    pass
+    return
 
 def save_data(username, email, password):
     # <------------------------------------------------------<<<
-    pass
-
-def getEmail():
-    # <------------------------------------------------------<<<
-    pass
+    return
 
 def user_Check(username, password)-> bool:
+    exist = True
+    # user, passwd = getData(username, password)
+    # if(username == user and passwd == password):
+    #     exist = True
     
-    user, passwd = getData(username, password)
-    if(username == user and passwd == password):
-        exist = True
-    
-    else:
-        exist = False
+    # else:
+    #     exist = False
 
     return exist
 
 def email_check(email, username)-> bool:
-    mail = getEmail()
-
-    if mail == email:
-        return True
+    # <------------------------------------------------------<<<
+    # # mail = list(email)
+    # if mail == email:
+    #     return True
     
-    else:
-        return False
+    # else:
+    #     return False
+    return True
 
 
 def Login_Signup(num):
@@ -151,11 +178,104 @@ class Record_teacher():
         sleep(1)
         self.search_teacher()
 
+    def delete(self, teacher_id):
+        print(f"""
+    ****** Delete Menu ******
+    
+    Teacher ID : {teacher_id}
+""")
+        # fetch record of this teacher id and display
+        print("Are you sure...")
+        decision = input("Enter 'y' to delete or 'n' to return.")
+        decision = decision.strip().lower()
+
+        match(decision):
+            case 'y':
+                # database query to delete <------------------------------------------------------<<<
+                pass
+
+            case 'n':
+                self.management_menu("")
+            
+            case _:
+                print(" Invalid choice! \n Try again in 3 seconds.")
+                sleep(3)
+                self.delete()
+
+    def show(self, teacher_id):
+        # data to fetch from database and return a list where id == teacher_id.
+        clear_screen()
+        print("    ****** Teacher's Data ******")
+        print("\n")
+        print("    ID   |        First_name       |     Last_name        |      Father_name      | Gender |         Phone_no        |       Address      |            Email          |    Course_teaches  |")
+        # teacher is the 2D_list return by the database
+        for row in teacher:
+            print(f"    {row[0]}   |   {row[1]}   |   {row[2]}   |   {row[3]}   |   {row[4]}   |   {row[5]}   |   {row[6]}   |   {row[7]}   |   {row[8]}   |")
+
+        input("Press any key to go back student menu.")
+        self.teacher_corner()
+
+    def update(self, t_id):
+        clear_screen()
+        print("    ****** Update Teacher ******")
+        print("\n")
+        first_name = input("    Enter new First name : ")
+        last_name = input("    Enter new Last name : ")
+        father_name = input("    Enter new Father name : ")
+        gender = input("    Enter new Gender : ")
+        phone_no = int(input("    Enter new Phone no. : "))
+        address = input("    Enter new Address : ")
+        email = input("    Enter new Email Address : ")
+        course_teach = input("    Enter new Course you can teach : ")
+            
+        enrollment = [first_name, last_name, father_name, gender, phone_no, address, email, course_teach]
+        # Alter Query to update teacher record where teacher_id == t_id
+        self.management_menu("")
+
+    def management_menu(self, teacher_id):
+        print("""
+    ****** Management Menu ******
+    
+    1. Delete record.
+    2. Show records.
+    3. Update record 
+              
+    Press "e" to go back to last menu
+""")
+        choice = input("Enter your choice")
+
+        match(choice):
+            case '1':
+                self.delete(teacher_id)
+
+            case '2':
+                self.show(teacher_id)
+
+            case '3':
+                self.update(teacher_id)
+
+            case 'e':
+                self.management_menu(teacher_id)
+
+            case _:
+                print(" Invalid choice! \n Try again in 3 seconds.")
+                sleep(3)
+                self.management_menu()
+    
  
-    def search_teacher():
+    def search_teacher(self):
         print("    ****** Search Menu ******\n")
 
         teacher_id = input("Enter Teacher id to search : ")
+        # Check student id in db <-------------------------------------<<<
+        # if found in db found = true else false
+        # found = teacher_id_exists() # returns true/false
+
+        # if found: 
+        self.management_menu(teacher_id)
+        
+        # else:
+        #     self.notFound_teacher(teacher_id)
         
 
     def teacher_corner(self):
@@ -191,7 +311,154 @@ class Record_teacher():
 
 
 class Record_student():
-    pass
+
+    def notFound_student(self, student_id):
+        print("    ****** Search Course ******")
+        print()
+        print(f"Course ID : {student_id}")
+        print("! ! ! Record Not Found ! ! !")
+        input("Press any key to go back to last menu")
+        sleep(1)
+        self.student_corner()
+
+    def search_student(self):
+        clear_screen()
+        print("""
+    ****** Search Menu ******
+
+""")
+        student_id = input("Enter Student ID : ")
+        # Check student id in db <-------------------------------------<<<
+        # if found in db found = true else false
+        found = student_id_exists() # returns true/false
+
+        if found: 
+            self.management_menu(student_id)
+        
+        else:
+            self.notFound_student(student_id)
+ 
+
+    def delete(self, student_id):
+        print("    ****** Delete Menu ******\n")
+        decision = input("Enter 'y' to delete or 'n' return to last menu.")
+        decision = decision.strip().lower()
+
+        match(decision):
+            case 'y':
+                # delete record from the database
+                self.student_corner()
+            
+            case 'n':
+                self.management_menu(student_id)
+
+    def show_student(self, student_id):
+        # data to fetch from database and return a list where id == student_id.
+        clear_screen()
+        print("    ****** Student's Data ******")
+        print("\n")
+        print("    ID   |        First_name       |     Last_name        |      Father_name      | Gender |         Phone_no        |       Address      |            Email          |    Course enrolled in  |")
+        # student is the 2D_list return by the database
+        for row in student:
+            print(f"    {row[0]}   |   {row[1]}   |   {row[2]}   |   {row[3]}   |   {row[4]}   |   {row[5]}   |   {row[6]}   |   {row[7]}   |   {row[8]}   |")
+
+    def update_student(self, student_id):
+        clear_screen()
+        print("    ****** Update Teacher ******")
+        print("\n")
+        try:
+            first_name = input("    Enter new First name : ")
+            last_name = input("    Enter new Last name : ")
+            father_name = input("    Enter new Father name : ")
+            gender = input("    Enter new Gender : ")
+            phone_no = int(input("    Enter new Phone no. : "))
+            address = input("    Enter new Address : ")
+            email = input("    Enter new Email Address : ")
+            course_to_enroll = input("    Enter new Course to enroll in : ")
+                
+            enrollment = [first_name, last_name, father_name, gender, phone_no, address, email, course_to_enroll]
+        except Exception as e:
+            print("Error : ", e)
+        # Alter Query to update teacher record where teacher_id == t_id
+        self.management_menu("")
+
+    def management_menu(self, student_id):
+        print("""
+    ****** Management Menu ******
+    
+    1. Delete record.
+    2. Show records.
+    3. Update record 
+              
+    Press "e" to go back to last menu
+""")
+        choice = input("Enter your choice")
+
+        match(choice):
+            case '1':
+                self.delete(student_id)
+
+            case '2':
+                self.show_student(student_id)
+
+            case '3':
+                self.update_student(student_id)
+
+            case 'e':
+                self.student_corner()
+
+            case _:
+                print(" Invalid choice! \n Try again in 3 seconds.")
+                sleep(3)
+                self.management_menu() 
+
+        
+
+    def approval(self):
+        clear_screen()
+        print("    ****** Approval Menu ******")
+        self.show() # Ahmad raza your function for json data to show
+
+        approve_permission = input("    1. Approve admission\n    2. Reject admission")
+        if approve_permission:
+            for row in data: # json data to feed in sql database (Farhan your function)
+                database_row : list = row
+            # Email notification for approval
+
+        else:
+            print("The application has been rejected.")
+            # email notification for rejection
+            print("Better luck next time.")
+            sleep(3)
+            self.student_corner()
+
+    def student_corner(self):
+        print("""
+    ****** Courses ******
+    
+    1. Insert record.
+    2. Search record.
+
+    Press "e" to go back to last menu.
+""")
+        choice = str(input("Enter your choice. "))
+
+        match(choice):
+            case '1':
+                self.approval()
+
+            case '2':
+                self.search_student()
+
+            case 'e':
+                p = Principal()
+                p.main()
+
+            case _:
+                print("Invalid choice.")
+                print("Please try again in 3 seconds.")
+                sleep(3)
+                self.student_corner()
 
 # ------------------------------------------------------ #
 
@@ -288,8 +555,8 @@ class Record_courses():
         print("""
     ****** Courses ******
     
-    1. Insert course record.
-    2. Search course record.
+    1. Insert record.
+    2. Search record.
 
     Press "e" to go back to last menu.
 """)
@@ -317,7 +584,7 @@ class Record_courses():
 
 
 class Principal:
-    def main():
+    def main(self):
         clear_screen()
         print("""
     ****** Welcome ******
@@ -334,15 +601,15 @@ class Principal:
         match (choice):
             case '1':
                 t = Record_teacher()
-                t.corner()
+                t.teacher_corner()
 
             case '2':
                 s = Record_student()
-                s.corner()
+                s.student_corner()
             
             case '3':
                 c = Record_courses()
-                c.corner()
+                c.courses_corner()
             
             case "e":
                 print("Exiting.......")
@@ -358,7 +625,7 @@ class Principal:
 
 
 class Teacher:
-    def main():
+    def main(self):
         clear_screen()
 
 
@@ -366,7 +633,7 @@ class Teacher:
 
 
 class Student:
-    def main():
+    def main(self):
         clear_screen()
 
 
