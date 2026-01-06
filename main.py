@@ -1,40 +1,25 @@
-from time import sleep
-from os import system
-from random import shuffle
-from string import punctuation, digits, ascii_letters
+from utils import Utils as u
+from crypto_utils import generate_key, encrypt_message, decrypt_message
+from students import student_management_menu
+from teachers import teacher_management_menu
 
-def encrypt_decrypt():
-    chars = " "+punctuation + digits + ascii_letters
-    chars = list(chars)
-    key = chars.copy()
-    shuffle(key)
-    print(key)
+# chars, key = generate_key()
 
-    # Encryption
-    plain_text = input("Enter a message to encrypt: ") # abc
-    cipher_text = ""
+# print("Key:", key)
 
-    for letter in plain_text:
-        index = chars.index(letter)
-        cipher_text += key[index]
+# # Encryption
+# plain_text = input("Enter a message to encrypt: ")
+# cipher_text = encrypt_message(plain_text, chars, key)
 
-    print(f"Original message : {plain_text}")
-    print(f"Encrypted message : {cipher_text}")
+# print(f"Original message : {plain_text}")
+# print(f"Encrypted message : {cipher_text}")
 
-    # Decryption
-    cipher_text = input("Enter a message to encrypt: ")
-    plain_text = ""
+# # Decryption
+# cipher_input = input("Enter a message to decrypt: ")
+# decrypted_text = decrypt_message(cipher_input, chars, key)
 
-    for letter in cipher_text:
-        index = key.index(letter)
-        plain_text += chars[index]
-
-    print(f"Cipher Text : {cipher_text}")
-    print(f"Original Message : {plain_text}")
-
-
-def clear_screen():
-    _ = system('cls')
+# print(f"Cipher Text : {cipher_input}")
+# print(f"Original Message : {decrypted_text}")
 
 def getData(username, password):
     # <------------------------------------------------------<<<
@@ -69,7 +54,7 @@ def email_check(email, username)-> bool:
 def Login_Signup(num):
     panel = num
     # <------------------------------------------------------<<<
-    clear_screen()
+    u.clear_screen()
     print("""
     **** Welcome to login & signup ****
         
@@ -91,7 +76,7 @@ def Login_Signup(num):
             main()
 
 def login(num):
-    clear_screen()
+    u.clear_screen()
     print("""
     *********** Login ***********
     
@@ -103,21 +88,22 @@ def login(num):
     
     value : bool = user_Check(username, password)
 
+
+    if value and num == 2:
+        print("teach")
+        teacher_management_menu()
+
+    if value and num == 3:
+        print("student")
+        student_management_menu()
+
     if value and num == 1:
         obj_principal = Principal()
         obj_principal.main()
 
-    elif value and num == 1:
-        obj_teacher = Teacher()
-        obj_teacher.main()
-
-    elif value and num == 1:
-        obj_student = Student()
-        obj_student.main()
-
 def signup(panel):
     while(True):
-        clear_screen()
+        u.clear_screen()
         print("""
         *********** Login ***********
         
@@ -137,7 +123,7 @@ def signup(panel):
         else:
             print("Invalid Email Address.")
             print("Enter valid email address")
-            sleep(3)
+            u.sleep(3)
             return
   
 
@@ -152,7 +138,7 @@ class Record_teacher():
         print("Enrollment saved successfully.")
 
     def new_teacher(self):
-            clear_screen()
+            u.clear_screen()
             print("    ****** Introducing New Teacher ******")
             print("\n")
             first_name = input("    First name : ")
@@ -175,7 +161,7 @@ class Record_teacher():
         print(f"Course ID : {teacher_id}")
         print("! ! ! Record Not Found ! ! !")
         input("Press any key to go back to last menu")
-        sleep(1)
+        u.sleep(1)
         self.search_teacher()
 
     def delete(self, teacher_id):
@@ -199,12 +185,12 @@ class Record_teacher():
             
             case _:
                 print(" Invalid choice! \n Try again in 3 seconds.")
-                sleep(3)
-                self.delete()
+                u.sleep(3)
+                self.delete(teacher_id)
 
     def show(self, teacher_id):
         # data to fetch from database and return a list where id == teacher_id.
-        clear_screen()
+        u.clear_screen()
         print("    ****** Teacher's Data ******")
         print("\n")
         print("    ID   |        First_name       |     Last_name        |      Father_name      | Gender |         Phone_no        |       Address      |            Email          |    Course_teaches  |")
@@ -216,7 +202,7 @@ class Record_teacher():
         self.teacher_corner()
 
     def update(self, t_id):
-        clear_screen()
+        u.clear_screen()
         print("    ****** Update Teacher ******")
         print("\n")
         first_name = input("    Enter new First name : ")
@@ -228,7 +214,7 @@ class Record_teacher():
         email = input("    Enter new Email Address : ")
         course_teach = input("    Enter new Course you can teach : ")
             
-        enrollment = [first_name, last_name, father_name, gender, phone_no, address, email, course_teach]
+        update_list = [first_name, last_name, father_name, gender, phone_no, address, email, course_teach]
         # Alter Query to update teacher record where teacher_id == t_id
         self.management_menu("")
 
@@ -259,7 +245,7 @@ class Record_teacher():
 
             case _:
                 print(" Invalid choice! \n Try again in 3 seconds.")
-                sleep(3)
+                u.sleep(3)
                 self.management_menu()
     
  
@@ -303,7 +289,7 @@ class Record_teacher():
             case _:
                 print("Invalid choice.")
                 print("Please try again in 3 seconds.")
-                sleep(3)
+                u.sleep(3)
                 self.teacher_corner()
 
 
@@ -318,11 +304,11 @@ class Record_student():
         print(f"Course ID : {student_id}")
         print("! ! ! Record Not Found ! ! !")
         input("Press any key to go back to last menu")
-        sleep(1)
+        u.sleep(1)
         self.student_corner()
 
     def search_student(self):
-        clear_screen()
+        u.clear_screen()
         print("""
     ****** Search Menu ******
 
@@ -354,7 +340,7 @@ class Record_student():
 
     def show_student(self, student_id):
         # data to fetch from database and return a list where id == student_id.
-        clear_screen()
+        u.clear_screen()
         print("    ****** Student's Data ******")
         print("\n")
         print("    ID   |        First_name       |     Last_name        |      Father_name      | Gender |         Phone_no        |       Address      |            Email          |    Course enrolled in  |")
@@ -363,7 +349,7 @@ class Record_student():
             print(f"    {row[0]}   |   {row[1]}   |   {row[2]}   |   {row[3]}   |   {row[4]}   |   {row[5]}   |   {row[6]}   |   {row[7]}   |   {row[8]}   |")
 
     def update_student(self, student_id):
-        clear_screen()
+        u.clear_screen()
         print("    ****** Update Teacher ******")
         print("\n")
         try:
@@ -409,13 +395,13 @@ class Record_student():
 
             case _:
                 print(" Invalid choice! \n Try again in 3 seconds.")
-                sleep(3)
+                u.sleep(3)
                 self.management_menu() 
 
         
 
     def approval(self):
-        clear_screen()
+        u.clear_screen()
         print("    ****** Approval Menu ******")
         self.show() # Ahmad raza your function for json data to show
 
@@ -429,7 +415,7 @@ class Record_student():
             print("The application has been rejected.")
             # email notification for rejection
             print("Better luck next time.")
-            sleep(3)
+            u.sleep(3)
             self.student_corner()
 
     def student_corner(self):
@@ -457,7 +443,7 @@ class Record_student():
             case _:
                 print("Invalid choice.")
                 print("Please try again in 3 seconds.")
-                sleep(3)
+                u.sleep(3)
                 self.student_corner()
 
 # ------------------------------------------------------ #
@@ -473,19 +459,19 @@ class Record_courses():
         print("    ****** Show Menu ******")
         delete_course = input("Enter your course id to delete.")
         # delete commands <------------------------------------------------------<<< 
-        sleep(2)
+        u.sleep(2)
         self.management_menu()
 
     def show(self):
-        clear_screen()
+        u.clear_screen()
         #           <------------------------------------------------------<<<
         print(f"""
     ****** Show Menu ******
-    
-    Course ID : {course_id}
-    Course Name : {course_name}
-
+    Course ID    |     Course Name   |    Department
 """)
+        for course in courses:
+            print(f"    {course[0]}  |   {course[1]}   |  {course[2]}")
+
         input(    "Press any key to go back to last menu.")
         self.management_menu()
 
@@ -513,7 +499,7 @@ class Record_courses():
 
             case _:
                 print(" Invalid choice! \n Try again in 3 seconds.")
-                sleep(3)
+                u.sleep(3)
                 self.management_menu()
 
     def not_recordFound(self, course_id):
@@ -523,7 +509,7 @@ class Record_courses():
         print(f"Course ID : {course_id}")
         print("! ! ! Record Not Found ! ! !")
         input("Press any key to go back to last menu")
-        sleep(1)
+        u.sleep(1)
         self.search()
 
     def save_course(self, new_course):
@@ -540,11 +526,11 @@ class Record_courses():
             self.management_menu()
         
         else:
-            clear_screen()
+            u.clear_screen()
             self.not_recordFound()
 
     def new_course(self):
-        clear_screen()
+        u.clear_screen()
         print("    ****** Introducing New Course ******")
         print("\n")
         new_course = input("    Enter new course name to add.")
@@ -576,7 +562,7 @@ class Record_courses():
             case _:
                 print("Invalid choice.")
                 print("Please try again in 3 seconds.")
-                sleep(3)
+                u.sleep(3)
                 self.courses_corner()
 
 
@@ -585,7 +571,7 @@ class Record_courses():
 
 class Principal:
     def main(self):
-        clear_screen()
+        u.clear_screen()
         print("""
     ****** Welcome ******
 
@@ -613,28 +599,13 @@ class Principal:
             
             case "e":
                 print("Exiting.......")
-                sleep(2)
+                u.sleep(2)
             
             case _:
                 print("Invalid choice.")
                 print("Try again in 3 seconds.")
-                sleep(3)
+                u.sleep(3)
 
-
-# ------------------------------------------------------ #
-
-
-class Teacher:
-    def main(self):
-        clear_screen()
-
-
-# ------------------------------------------------------ #
-
-
-class Student:
-    def main(self):
-        clear_screen()
 
 
 # ------------------------------------------------------ #
@@ -642,7 +613,7 @@ class Student:
 
 
 def main():
-    clear_screen()
+    u.clear_screen()
     print("""
 **** Welcome to Student Management System ****
 
@@ -656,7 +627,7 @@ def main():
     if choice == 'e':
         print("Exiting....")
         print("Thanks for coming.")
-        sleep(2)
+        u.sleep(2)
 
     else:
         choice = int(choice)
