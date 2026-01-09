@@ -1,81 +1,100 @@
 from utils import Utils as u
+import database as db
 
 def teacher_management_menu():
-        u.clear_screen()
-        print("""
-    ****** Management Menu ******
+    u.clear_screen()
+    print("""
+    ****** Teacher Management Menu ******
     
-    1. Show Teachers.
-    2. New Addmission.
+    1. Show All Teachers
+    2. New Admission (Student Enrollment)
               
     Press "e" to exit.
 """)
-        choice = input("Enter your choice")
+    choice = input("    Enter your choice: ")
 
-        match(choice):
-            case '1':
-                show_teachers()
+    match(choice):
+        case '1':
+            show_teachers()
 
-            case '2':
-                new_addmission()
+        case '2':
+            new_addmission()
 
-            case 'e':
-                print("Exiting....")
-                u.sleep(2)
-
-            case _:
-                print(" Invalid choice! \n Try again in 3 seconds.")
-                u.sleep(3)
-                teacher_management_menu()
-
-def show_teachers():
-
-    print("    ****** Teacher's Data ******")
-    path = r'C:\Users\mueed\OneDrive\All About Python\Python\Student_Management_System_python\studentdb.mdf'
-
-    with open(path, 'r') as f:  #  these two line is an example for fetch
-        teachers = f.read()     #  data from db and returns a students list
-        for teacher in teachers:
-                    #  name(first+last)   father_name       gender              phone_no            course_teaches
-            print(f"   {teacher[1]}  |   {teacher[2]}   |   {teacher[3]}   |   {teacher[4]}   |   {teacher[5]}   |")
-
-    input("Press any key to go back to last menu.")
-    teacher_management_menu()
-
-def approval(addmission_form):
-    # Ahmad raza here you will save the above data into json file.
-    pass
-
-def new_addmission():
-    print("    ****** Addmission Form ******")
-
-    first_name = input("Enter your first name : ")
-    last_name = input("Enter your first name : ") 
-    father_name = input("Enter your first name : ") 
-    gender = input("Enter your first name : ") 
-    phone_no = input("Enter your first name : ") 
-    address = input("Enter your first name : ")    
-    email = input("Enter your first name : ") 
-    course_enroll = input("Enter your first name : ") 
-
-    addmission_form = [first_name, last_name, father_name, gender, phone_no, address, email, course_enroll]
-    
-    print("""
-    1. Send for approval
-    2. Enter "e" to go back to last menu.
-""")
-    
-    choice = input("Enter your choice.")
-
-    match (choice):
-        case 1:
-            approval(addmission_form)
-            teacher_management_menu()
-
-        case 2:
-            teacher_management_menu()
+        case 'e':
+            print("    Returning to main menu...")
+            u.sleep(1)
 
         case _:
-            print(" Invalid choice! \n Try again in 3 seconds.")
+            print("    Invalid choice! \n    Try again in 3 seconds.")
             u.sleep(3)
             teacher_management_menu()
+
+def show_teachers():
+    u.clear_screen()
+    # Fetch all teachers from the database
+    # Note: You may need to add get_all_teachers to database.py if not already there
+    con = db.create_connection()
+    cur = con.cursor()
+    cur.execute("SELECT * FROM teachers")
+    teachers = cur.fetchall()
+    cur.close()
+    con.close()
+
+    print("    " + "="*125)
+    print("    {:^125}".format("TEACHER'S DIRECTORY"))
+    print("    " + "="*125)
+
+    if not teachers:
+        print("\n    [!] No teacher records found.")
+    else:
+        # Define Headers
+        headers = ["ID", "Full Name", "Father Name", "Gender", "Phone", "Course Specialty"]
+        print(f"    {headers[0]:<5} | {headers[1]:<25} | {headers[2]:<20} | {headers[3]:<10} | {headers[4]:<15} | {headers[5]:<25}")
+        print("    " + "-"*125)
+
+        for t in teachers:
+            # Index mapping: 0:id, 1:first, 2:last, 3:father, 4:gender, 5:phone, 8:course
+            full_name = f"{t[1]} {t[2]}"
+            print(f"    {str(t[0]):<5} | {full_name:<25} | {t[3]:<20} | {t[4]:<10} | {t[5]:<15} | {t[8]:<25}")
+
+    print("    " + "="*125)
+    input("\n    Press any key to go back to last menu.")
+    teacher_management_menu()
+
+def approval(admission_data):
+    # This sends the data to the students table in the database
+    print("\n    Sending for approval...")
+    u.sleep(1)
+    db.db_add_student(admission_data)
+    print("    ✅ Admission record saved successfully!")
+    u.sleep(2)
+
+def new_addmission():
+    u.clear_screen()
+    print("    " + "="*50)
+    print("    {:^50}".format("STUDENT ADMISSION FORM"))
+    print("    " + "="*50)
+
+    first_name = input("    First Name       : ")
+    last_name  = input("    Last Name        : ") 
+    father_name= input("    Father Name      : ") 
+    gender     = input("    Gender           : ") 
+    phone_no   = input("    Phone No.        : ") 
+    address    = input("    Address          : ")    
+    email      = input("    Email Address    : ") 
+    course     = input("    Course to Enroll : ") 
+
+    admission_form = [first_name, last_name, father_name, gender, phone_no, address, email, course]
+    
+    print("\n    1. Confirm and Save")
+    print("    2. Discard and Go Back")
+    
+    choice = input("\n    Enter your choice: ")
+
+    if choice == '1':
+        approval(admission_form)
+        teacher_management_menu()
+    else:
+        print("    Admission discarded.")
+        u.sleep(1)
+        teacher_management_menu()
